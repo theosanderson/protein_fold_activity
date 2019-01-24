@@ -1,9 +1,12 @@
-standard = 10;
+standard = 30;
+$fn = 20;
+indicator_size = 3;
+edge_thickness = 2;
+compress_factor = 1;
 
-
-
-plate_thickness = 2;
-plate_width = 9.5;
+plate_thickness = 3.1;
+plate_width = 30;
+lid_thickness = 1;
 
 module complex_hull() {
     children(0); //male
@@ -23,14 +26,67 @@ module complex_hull() {
 
 }
 
+module magnet_hole() {
+    cylinder(r = 2.55, h = 3.1);
+}
+
+module join_hole() {
+    cylinder(r = 2, h = 3.1);
+}
+
+module join_hole_connector() {
+    cylinder(r = 2, h = 3.0);
+}
 
 module female_plate() {
     color("white")
     difference() {
         cube([plate_width, plate_width, plate_thickness]);
+        translate([10, 5, 0]) magnet_hole();
+        translate([22, 5, 0]) magnet_hole();
+        translate([20, 20, 0]) magnet_hole();
 
-        translate([2, 2, -1]) cube([3, 1, plate_thickness * 5]);
-        translate([2, 2, -1]) cube([1, 3, plate_thickness * 5]);
+        translate([5, 15, 0]) join_hole();
+        translate([17, 12, 0]) join_hole();
+
+
+    }
+};
+
+
+module plate_lid() {
+    color("red")
+    difference() {
+        union() {
+            cube([plate_width, plate_width, lid_thickness]);
+
+
+            translate([5, 15, 0]) join_hole_connector();
+            translate([17, 12, 0]) join_hole_connector();
+
+
+
+
+        }
+        mirror() translate([-25, 5, 0]) linear_extrude(0.25) text("N", size = 20);
+    }
+};
+
+module plate_lid2() {
+    color("red")
+    difference() {
+        union() {
+            cube([plate_width, plate_width, lid_thickness]);
+
+
+            translate([5, 15, -3]) join_hole_connector();
+            translate([17, 12, -3]) join_hole_connector();
+
+
+
+
+        }
+        translate([5, 5, 0.5]) linear_extrude(5.25) text("C", size = 20);
     }
 };
 
@@ -187,8 +243,9 @@ module straight_notched4() {
     }
 };
 
-start() left() left() back() front() left() straight() left() straight() left() straight() back() right() back() straight() back() straight() straight() straight_notched3() back() straight() back() straight_notched3() left();
 
+plate_lid2();
+//straight();
 //straight_notched3();
 
 //start() front() straight() front() straight()straight()straight() front() straight() front() straight() left()straight() left() front() left() front()front() back() back() front(); 
